@@ -1,0 +1,183 @@
+﻿<Window x:Class="Indes2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wpf="clr-namespace:WebEye.Controls.Wpf;assembly=WebEye.Controls.Wpf.WebCameraControl"
+        xmlns:local="clr-namespace:Indes2"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="29*"/>
+            <RowDefinition Height="41*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="269*"/>
+            <ColumnDefinition Width="128*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Background>
+            <ImageBrush ImageSource="back.jpg" Stretch="Fill"/>
+        </Grid.Background>
+
+        <wpf:WebCameraControl x:Name="webCameraControl" Visibility="Hidden" Margin="23,53,380.6,30.4"  />
+        <MediaElement x:Name="video1ME" MediaEnded="Video1ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Play"   HorizontalAlignment="Left" Height="135" Margin="190,0,0,37.4" VerticalAlignment="Bottom" Width="151"/>
+        <MediaElement x:Name="video2ME" MediaEnded="Video2ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Play"  HorizontalAlignment="Left" Height="88" Margin="366,0,0,33.4" VerticalAlignment="Bottom" Width="153"/>
+        <MediaElement x:Name="liveME"   Tag="0" MediaEnded="Video3ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Manual"  HorizontalAlignment="Left" Height="159" Margin="12.4,12,0,0" VerticalAlignment="Top" Width="217" Grid.Column="1"/>
+        <wpf:WebCameraControl Visibility="Hidden" x:Name="webCameraControlLive" Margin="13.4,13,28.6,5.4" Grid.Column="1"  />
+
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="94" Margin="14.4,36.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="240">
+            <Button x:Name="buttonMixLive1" Content="1" Width="75" Click="ButtonMixLive1_Click" Background="Red"/>
+            <Button x:Name="buttonMixLive2" Content="2" Width="75" Click="ButtonMixLive2_Click" Background="Red"/>
+            <Button x:Name="buttonMixLive3" Content="3" Width="75" Click="ButtonMixLive3_Click" Background="Red"/>
+        </StackPanel>
+
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="94" Margin="14.4,150.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="240">
+            <Button x:Name="buttonLC1" Content="Local I" Width="75" Click="ButtonLC1_Click" Background="Red" />
+            <Button x:Name="buttonLC2" Content="Local II" Width="75" Click="ButtonLC2_Click"/>
+            <Button x:Name="buttonPL" Content="PL" Width="75" Click="ButtonPL_Click" Background="Red"/>
+        </StackPanel>
+        <TextBlock x:Name="textBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="20.4,6.4,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="219" FontSize="20" FontWeight="Bold" Foreground="#FF022E65" TextAlignment="Center">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138DBA" Offset="0.009"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Text="MIX LIVE">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run></TextBlock>
+        <Rectangle Fill="#FF138DBA" Height="2" Margin="1.4,137.6,0,0" Grid.Row="1" Stroke="White" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left" Width="254"/>
+        <Rectangle Fill="#FF138DBA" HorizontalAlignment="Left" Height="2" Margin="-2,0.4,-1.4,0" Grid.Row="1" Stroke="White" VerticalAlignment="Top" Width="797" Grid.ColumnSpan="2"/>
+        <Rectangle Fill="#FF138DBA" HorizontalAlignment="Left" Margin="0.4,0,0,0" Grid.RowSpan="2" Stroke="White" Width="2" Grid.Column="1" Height="419" VerticalAlignment="Bottom"/>
+
+        <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="165" Margin="18,34.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="147"/>
+        <ListBox x:Name="listBox1" HorizontalAlignment="Left" Height="76" Margin="190,36.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="141"/>
+        <ListBox x:Name="listBox2" HorizontalAlignment="Left" Height="71" Margin="190,149.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="142"/>
+        <ListBox x:Name="listBox3" HorizontalAlignment="Left" Height="159" Margin="367,37.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150"/>
+        <Button x:Name="buttonAddL1" Content="Add L1" HorizontalAlignment="Left" Margin="19,208.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonAddL1_Click"/>
+        <Button x:Name="buttonAddL2" Content="Add L2" HorizontalAlignment="Left" Margin="69,209.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonAddL2_Click"/>
+        <Button x:Name="buttonAddL3" Content="ADD L3" HorizontalAlignment="Left" Margin="117,209.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="47" Height="26" Click="ButtonAddL3_Click"/>
+        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" Margin="37,6.6,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="91" FontSize="15" FontWeight="Bold" Foreground="#FF022E65" Height="20" TextAlignment="Center">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138DBA" Offset="0.009"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Text="Files list">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run></TextBlock>
+        <TextBlock x:Name="textBlock_Copy1" HorizontalAlignment="Left" Margin="193,10.6,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="91" FontSize="15" FontWeight="Bold" Foreground="#FF022E65" Height="20" TextAlignment="Center">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138DBA" Offset="0.009"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Text="Video 1">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run></TextBlock>
+        <TextBlock x:Name="textBlock_Copy2" HorizontalAlignment="Left" Margin="192,124.6,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="91" FontSize="15" FontWeight="Bold" Foreground="#FF022E65" Height="20" TextAlignment="Center">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138DBA" Offset="0.009"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Text="Video ">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run><Run Text="2">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run></TextBlock>
+        <TextBlock x:Name="textBlock_Copy3" HorizontalAlignment="Left" Margin="368,11.6,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="91" FontSize="15" FontWeight="Bold" Foreground="#FF022E65" Height="20" TextAlignment="Center">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138DBA" Offset="0.009"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Text="Playlist">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run></TextBlock>
+        <TextBlock x:Name="textBlock_Copy4" HorizontalAlignment="Left" Margin="212,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="91" FontSize="15" FontWeight="Bold" Foreground="#FF022E65" Height="20" TextAlignment="Center">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138DBA" Offset="0.009"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Text="Video 1">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run></TextBlock>
+        <TextBlock x:Name="textBlock_Copy5" HorizontalAlignment="Left" Margin="389,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="91" FontSize="15" FontWeight="Bold" Foreground="#FF022E65" Height="20" TextAlignment="Center">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138DBA" Offset="0.009"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Text="Video ">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run><Run Text="2">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run></TextBlock>
+        <TextBlock x:Name="textBlock_Copy6" HorizontalAlignment="Left" Margin="40,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="91" FontSize="15" FontWeight="Bold" Foreground="#FF022E65" Height="20" TextAlignment="Center">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138DBA" Offset="0.009"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Text="Local cam">
+                <Run.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF138DBA" Offset="0"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Run.Background>
+            </Run></TextBlock>
+        <Button x:Name="buttonDel2" Content="Del L2" HorizontalAlignment="Left" Margin="286,121.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel2_Click" />
+        <Button x:Name="buttonDel1" Content="Del L1" HorizontalAlignment="Left" Margin="287,7.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel1_Click" />
+        <Button x:Name="buttonDel3" Content="Del PL" HorizontalAlignment="Left" Margin="468,6.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel3_Click" />
+
+
+
+    </Grid>
+</Window>
