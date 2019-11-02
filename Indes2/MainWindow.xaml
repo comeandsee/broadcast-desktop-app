@@ -4,6 +4,8 @@
         xmlns:wpf="clr-namespace:WebEye.Controls.Wpf;assembly=WebEye.Controls.Wpf.WebCameraControl"
         xmlns:local="clr-namespace:Indes2"
         Title="MainWindow" Height="450" Width="800">
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="29*"/>
@@ -17,23 +19,25 @@
             <ImageBrush ImageSource="back.jpg" Stretch="Fill"/>
         </Grid.Background>
 
-        <wpf:WebCameraControl x:Name="webCameraControl" Visibility="Hidden" Margin="23,53,380.6,30.4"  />
-        <MediaElement x:Name="video1ME" MediaEnded="Video1ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Play"   HorizontalAlignment="Left" Height="135" Margin="190,0,0,37.4" VerticalAlignment="Bottom" Width="151"/>
-        <MediaElement x:Name="video2ME" MediaEnded="Video2ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Play"  HorizontalAlignment="Left" Height="88" Margin="366,0,0,33.4" VerticalAlignment="Bottom" Width="153"/>
-        <MediaElement x:Name="liveME"   Tag="0" MediaEnded="Video3ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Manual"  HorizontalAlignment="Left" Height="159" Margin="12.4,12,0,0" VerticalAlignment="Top" Width="217" Grid.Column="1"/>
-        <wpf:WebCameraControl Visibility="Hidden" x:Name="webCameraControlLive" Margin="13.4,13,28.6,5.4" Grid.Column="1"  />
+        <Image x:Name="image"   HorizontalAlignment="Left" Height="120" Margin="27,49,0,0" VerticalAlignment="Top"  Width="134"/>
 
+        <wpf:WebCameraControl x:Name="webCameraControl" Visibility="Hidden" Margin="23,53,380.6,30.4"  />
+        <MediaElement x:Name="video1ME" MediaEnded="Video1ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Play"   HorizontalAlignment="Left" Height="120" Margin="194,49,0,0" VerticalAlignment="Top" Width="138"/>
+        <MediaElement x:Name="video2ME" MediaEnded="Video2ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Play"  HorizontalAlignment="Left" Height="120" Margin="361,49,0,0" VerticalAlignment="Top" Width="138"/>
+        <MediaElement x:Name="liveME"   Tag="0" MediaEnded="Video3ME_MediaEnded" Volume="0" Stretch="Uniform" LoadedBehavior="Manual"  HorizontalAlignment="Left" Height="159" Margin="12.4,12,0,0" VerticalAlignment="Top" Width="217" Grid.Column="1"/>
+
+        <Image x:Name="imageLive"   HorizontalAlignment="Left" Margin="14.4,13,0,7.4"  Width="216" Grid.Column="1"/>
 
         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="94" Margin="14.4,36.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="240">
-            <Button x:Name="buttonMixLive1" Content="1" Width="75" Click="ButtonMixLive1_Click" Background="Red"/>
+            <Button x:Name="buttonMixLive1" Content="1" Width="75"  Click="ButtonMixLive1_Click" Background="Red"/>
             <Button x:Name="buttonMixLive2" Content="2" Width="75" Click="ButtonMixLive2_Click" Background="Red"/>
             <Button x:Name="buttonMixLive3" Content="3" Width="75" Click="ButtonMixLive3_Click" Background="Red"/>
         </StackPanel>
 
 
         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="94" Margin="14.4,150.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="240">
-            <Button x:Name="buttonLC1" Content="Local I" Width="75" Click="ButtonLC1_Click" Background="Red" />
-            <Button x:Name="buttonLC2" Content="Local II" Width="75" Click="ButtonLC2_Click"/>
+            <Button x:Name="buttonLC1" Content="Local I" Width="75" Background="Red" Click="ButtonLC1_Click" />
+            <Button x:Name="buttonLC2"   Content="Local II" Width="75" Click="ButtonLC2_Click" />
             <Button x:Name="buttonPL" Content="PL" Width="75" Click="ButtonPL_Click" Background="Red"/>
         </StackPanel>
         <TextBlock x:Name="textBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="20.4,6.4,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="219" FontSize="20" FontWeight="Bold" Foreground="#FF022E65" TextAlignment="Center">
@@ -176,6 +180,7 @@
         <Button x:Name="buttonDel2" Content="Del L2" HorizontalAlignment="Left" Margin="286,121.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel2_Click" />
         <Button x:Name="buttonDel1" Content="Del L1" HorizontalAlignment="Left" Margin="287,7.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel1_Click" />
         <Button x:Name="buttonDel3" Content="Del PL" HorizontalAlignment="Left" Margin="468,6.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel3_Click" />
+
 
 
 
