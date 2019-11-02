@@ -37,7 +37,7 @@
 
         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="94" Margin="14.4,150.4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="240">
             <Button x:Name="buttonLC1" Content="Local I" Width="75" Background="Red" Click="ButtonLC1_Click" />
-            <Button x:Name="buttonLC2"   Content="Local II" Width="75" Click="ButtonLC2_Click" />
+            <Button x:Name="buttonLC2"   Content="Local II" Width="75" Click="ButtonLC2_Click" Background="Red" />
             <Button x:Name="buttonPL" Content="PL" Width="75" Click="ButtonPL_Click" Background="Red"/>
         </StackPanel>
         <TextBlock x:Name="textBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="20.4,6.4,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="219" FontSize="20" FontWeight="Bold" Foreground="#FF022E65" TextAlignment="Center">

@@ -124,6 +124,7 @@ namespace Indes2
 
                     if (isWebCamLocal1Play || isWebCamLocal2Play)
                     {
+                        ColorButtonsForVideoLive();
                         imageLive.Visibility = Visibility.Visible;
                         turnOnButton(buttonMixLive1);
                         isWebCamLive = true;
@@ -183,6 +184,7 @@ namespace Indes2
             turnOffButton(buttonMixLive1);
             turnOffButton(buttonMixLive2);
             turnOffButton(buttonMixLive3);
+            ColorWebLocalButtons();
         }
 
         private void ColorButtonsForVideo2()
@@ -192,8 +194,19 @@ namespace Indes2
             turnOffButton(buttonMixLive1);
             turnOffButton(buttonPL);
             turnOffButton(buttonMixLive2);
+            ColorWebLocalButtons();
         }
 
+        private void ColorButtonsForVideoLive()
+        {
+            turnOnButton(buttonMixLive1);
+
+            turnOffButton(buttonMixLive2);
+            turnOffButton(buttonPL);
+            turnOffButton(buttonMixLive3);
+            ColorWebLocalButtons();
+
+        }
         private void ColorButtonsForVideo1()
         {
             turnOnButton(buttonMixLive2);
@@ -201,6 +214,13 @@ namespace Indes2
             turnOffButton(buttonMixLive1);
             turnOffButton(buttonPL);
             turnOffButton(buttonMixLive3);
+            ColorWebLocalButtons();
+        }
+
+        private void ColorWebLocalButtons()
+        {
+            if (isWebCamLocal1Play) turnOnButton(buttonLC1);
+            if (isWebCamLocal2Play) turnOnButton(buttonLC2);
         }
 
         private void ColorButtonsForWebCamLocal1()
@@ -274,28 +294,16 @@ namespace Indes2
 
         private void ButtonLC1_Click(object sender, RoutedEventArgs e)
         {
+            buttonLC1.Background = System.Windows.Media.Brushes.Green;
+            buttonLC2.Background = System.Windows.Media.Brushes.Red;
             StopCamera();
             StartCamera(LiveCamStatus.webCamLocal1);
-            /*
-             if (isWebCamLocal2Play)
-             {
-                 //to do
-                 isWebCamLocal2Play = false;
-                 buttonLC2.Background = Brushes.Red;
-
-             }
-             if (!isWebCamLocal1Play && !isWebCamLive)
-             {
-                     webCameraControl.Visibility = Visibility.Visible;
-                     webCameraControl.StartCapture(cameraId);
-                     isWebCamLocal1Play = true;
-                     buttonLC1.Background = Brushes.Green;
-
-             }*/
         }
 
         private void ButtonLC2_Click(object sender, RoutedEventArgs e)
         {
+            buttonLC1.Background = System.Windows.Media.Brushes.Red;
+            buttonLC2.Background = System.Windows.Media.Brushes.Green;
             StopCamera();
             StartCamera(LiveCamStatus.webCamLocal2);
         }
@@ -303,7 +311,7 @@ namespace Indes2
         private void ButtonPL_Click(object sender, RoutedEventArgs e)
         {
             ManagerLiveMix(LiveCamStatus.playlist);
-            buttonPL.Background = System.Windows.Media.Brushes.Green;
+           
         }
 
         private void ButtonAddL1_Click(object sender, RoutedEventArgs e)
