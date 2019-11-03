@@ -11,16 +11,15 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using Accord.Video.FFMPEG;
-
+using System.Threading;
 
 namespace Indes2
 {
 
-    public partial class MainWindow : IDisposable
+    public partial class MainWindow 
     {
-        private WebCameraId cameraId = null;
         private int howMuchFiles = 10;
-
+        private String path = "Resources/";
         private List<int> files = new List<int>();
 
         private Playlist video1List = new Playlist();
@@ -29,11 +28,10 @@ namespace Indes2
 
         private bool isWebCamLive = false;
         private bool isCamLive = false;
-        private bool isWebCamLocal1Play = false;
-        private bool isWebCamLocal2Play = false;
 
+        private WebCamManager webCam;
 
-        private enum LiveCamStatus
+        public enum LiveCamStatus
         {
             webCamLocal1 = 1,
             webCamLocal2 = 2,
@@ -42,51 +40,18 @@ namespace Indes2
             playlist = 5
         }
 
-        private String path = "Resources/";
-
-        public ICommand StartSourceCommand { get; private set; }
+      
+        
         public MainWindow()
         {
             InitializeComponent();
             InitializeFilesList();
-            GetVideoDevices();
+            InitializeWebCams();
         }
-
-
-        private void PlayVideoList(Playlist playlist, MediaElement mediaElement, bool live = false)
-        {
-            // LOCAL
-
-            if (!playlist.CheckIfPlaylistDone() && !live)
-            {
-                String uri = $"{path}{playlist.GetVideoList()[playlist.NextIndex]}.mp4";
-                playlist.NextIndex += 1;
-                mediaElement.Source = new Uri(uri, UriKind.Relative);
-            }
-            else if (playlist.CheckIfPlaylistNotNull() && !live)
-            {
-                playlist.NextIndex = 0;
-                PlayVideoList(playlist, mediaElement);
-            }
-
-            //LIVE
-
-            if (!playlist.CheckIfPlaylistLiveDone() && live)
-            {
-                String uri = $"{path}{playlist.GetVideoList()[playlist.NextIndexLive]}.mp4";
-                playlist.NextIndexLive += 1;
-                mediaElement.Source = new Uri(uri, UriKind.Relative);
-            }
-            else if (playlist.CheckIfPlaylistNotNull() && live)
-            {
-                playlist.NextIndexLive = 0;
-                PlayVideoList(playlist, mediaElement, live);
-            }
-
-        }
-
+        
 
         //INITIALIZE
+
         private void InitializeFilesList()
         {
             for (int i = 1; i <= howMuchFiles; i++)
@@ -100,21 +65,17 @@ namespace Indes2
             }
 
         }
-        private void InitializeCamera()
+        private void InitializeWebCams()
         {
-            var x = webCameraControl.GetVideoCaptureDevices();
-
-            if (x != null)
-            {
-                IEnumerator<WebCameraId> enumerator = x.GetEnumerator();
-                if (enumerator.MoveNext()) cameraId = enumerator.Current;
-            }
+            webCam = new WebCamManager(ref image, ref imageLive, ref isWebCamLive);
         }
 
-        // MIX LIVE
+
+
+        // MIX LIVE MANAGE
+
         private void ManagerLiveMix(LiveCamStatus status)
         {
-
             switch (status)
             {
                 case LiveCamStatus.webCamLocal1:
@@ -122,12 +83,13 @@ namespace Indes2
                     ColorButtonsForWebCamLocal1();
                     StopIfCamLivePlay();
 
-                    if (isWebCamLocal1Play || isWebCamLocal2Play)
+                    if (webCam.IsWebCamLocal1Play  || webCam.IsWebCamLocal2Play)
                     {
                         ColorButtonsForVideoLive();
                         imageLive.Visibility = Visibility.Visible;
                         turnOnButton(buttonMixLive1);
                         isWebCamLive = true;
+                        webCam.IsWebCamLive = true;
                     }
 
                     break;
@@ -174,9 +136,215 @@ namespace Indes2
                     break;
             }
         }
+        
+
+        // MIX LIVE BUTTONS
+
+        private void ButtonMixLive1_Click(object sender, RoutedEventArgs e)
+        {
+            ManagerLiveMix(LiveCamStatus.webCamLocal1);
+        }
+
+        private void ButtonMixLive2_Click(object sender, RoutedEventArgs e)
+        {
+            ManagerLiveMix(LiveCamStatus.video1);
+        }
 
 
-        //COLORS
+        private void ButtonMixLive3_Click(object sender, RoutedEventArgs e)
+        {
+            ManagerLiveMix(LiveCamStatus.video2);
+        }
+
+
+        //MANAGE LIVE CAM
+
+        private void StopIfWebCamLivePlay()
+        {
+            if (isWebCamLive)
+            {
+                webCam.StopCamera();
+                isWebCamLive = false;
+                Thread.Sleep(1000);
+                if (webCam.IsWebCamLocal1Play) webCam.StartCamera(LiveCamStatus.webCamLocal1);
+                else if (webCam.IsWebCamLocal2Play) webCam.StartCamera(LiveCamStatus.webCamLocal2);
+                imageLive.Visibility = Visibility.Hidden;
+            }
+        }
+        private void StopIfCamLivePlay()
+        {
+            if (isCamLive)
+            {
+                liveME.LoadedBehavior = MediaState.Stop;
+                liveME.Visibility = Visibility.Hidden;
+                isCamLive = false;
+            }
+        }
+
+     
+        // MIX BUTTONS
+
+        private void ButtonLC1_Click(object sender, RoutedEventArgs e)
+        {
+            ColorLocalButtonsLC1();
+            webCam.StopCamera();
+            webCam.StartCamera(LiveCamStatus.webCamLocal1);
+        }
+        
+
+        private void ButtonLC2_Click(object sender, RoutedEventArgs e)
+        {
+            ColorLocalButtonsLC2();
+            webCam.StopCamera();
+            webCam.StartCamera(LiveCamStatus.webCamLocal2);
+        }
+
+     
+        private void ButtonPL_Click(object sender, RoutedEventArgs e)
+        {
+            ManagerLiveMix(LiveCamStatus.playlist);
+        }
+
+        private void ButtonAddL1_Click(object sender, RoutedEventArgs e)
+        {
+            ManageVideoList(video1List, listBox1, video1ME);
+        }
+
+        private void ButtonAddL2_Click(object sender, RoutedEventArgs e)
+        {
+            ManageVideoList(video2List, listBox2, video2ME);
+        }
+
+        private void ButtonAddL3_Click(object sender, RoutedEventArgs e)
+        {
+            AddVideoToList(video3List, listBox3);
+        }
+
+
+        // MANAGE LIST
+
+        private void PlayVideoList(Playlist playlist, MediaElement mediaElement, bool live = false)
+        {
+            // LOCAL
+
+            if (!playlist.CheckIfPlaylistDone() && !live)
+            {
+                String uri = $"{path}{playlist.GetVideoList()[playlist.NextIndex]}.mp4";
+                playlist.NextIndex += 1;
+                mediaElement.Source = new Uri(uri, UriKind.Relative);
+            }
+            else if (playlist.CheckIfPlaylistNotNull() && !live)
+            {
+                playlist.NextIndex = 0;
+                PlayVideoList(playlist, mediaElement);
+            }
+
+            //LIVE
+
+            if (!playlist.CheckIfPlaylistLiveDone() && live)
+            {
+                String uri = $"{path}{playlist.GetVideoList()[playlist.NextIndexLive]}.mp4";
+                playlist.NextIndexLive += 1;
+                mediaElement.Source = new Uri(uri, UriKind.Relative);
+            }
+            else if (playlist.CheckIfPlaylistNotNull() && live)
+            {
+                playlist.NextIndexLive = 0;
+                PlayVideoList(playlist, mediaElement, live);
+            }
+
+        }
+
+        private void AddVideoToList(Playlist videoList, ListBox box)
+        {
+            if (listBox.SelectedItem != null)
+            {
+                string choosedVideo = listBox.SelectedItem.ToString();
+                videoList.AddVideo(choosedVideo);
+                box.Items.Add(choosedVideo);
+            }
+        }
+        private void DelVideoFromList(Playlist videoList, ListBox boxChoosed)
+        {
+            if (boxChoosed.SelectedItem != null)
+            {
+                String choosedVideo = boxChoosed.SelectedItem.ToString();
+                videoList.DelVideo(choosedVideo);
+                boxChoosed.Items.RemoveAt(boxChoosed.SelectedIndex);
+            }
+        }
+        private void ManageVideoList(Playlist playlist, ListBox selectedBox, MediaElement mediaElement)
+        {
+            AddVideoToList(playlist, selectedBox);
+            if (playlist.Count() == 1)
+            {
+                PlayVideoList(playlist, mediaElement);
+            }
+        }
+        
+        private void StartLive()
+        {
+            liveME.Visibility = Visibility.Visible;
+            liveME.LoadedBehavior = MediaState.Play;
+            isCamLive = true;
+        }
+
+
+        //DELETE BUTTONS
+
+
+        private void ButtonDel1_Click(object sender, RoutedEventArgs e)
+        {
+            DelVideoFromList(video1List, listBox1);
+        }
+
+        private void ButtonDel2_Click(object sender, RoutedEventArgs e)
+        {
+            DelVideoFromList(video2List, listBox2);
+        }
+
+        private void ButtonDel3_Click(object sender, RoutedEventArgs e)
+        {
+            DelVideoFromList(video3List, listBox3);
+        }
+
+
+
+        //LOOPS FOR PLAYLISTS
+
+
+        private void Video1ME_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            PlayVideoList(video1List, video1ME);
+        }
+
+        private void Video2ME_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            PlayVideoList(video2List, video2ME);
+        }
+
+        private void Video3ME_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            switch (liveME.Tag)
+            {
+                case 1:
+                    PlayVideoList(video1List, liveME, true);
+                    break;
+                case 2:
+                    PlayVideoList(video2List, liveME, true);
+                    break;
+                case 3:
+                    PlayVideoList(video3List, liveME, true);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+
+
+        // ******************* COLORS ***************************
         private void ColorButtonsForPlaylist()
         {
             turnOnButton(buttonPL);
@@ -219,8 +387,8 @@ namespace Indes2
 
         private void ColorWebLocalButtons()
         {
-            if (isWebCamLocal1Play) turnOnButton(buttonLC1);
-            if (isWebCamLocal2Play) turnOnButton(buttonLC2);
+            if (webCam.IsWebCamLocal1Play) turnOnButton(buttonLC1);
+            if (webCam.IsWebCamLocal2Play) turnOnButton(buttonLC2);
         }
 
         private void ColorButtonsForWebCamLocal1()
@@ -239,297 +407,15 @@ namespace Indes2
         {
             button.Background = System.Windows.Media.Brushes.Green;
         }
-
-
-
-        // MIX LIVE BUTTONS
-        private void ButtonMixLive1_Click(object sender, RoutedEventArgs e)
-        {
-            ManagerLiveMix(LiveCamStatus.webCamLocal1);
-        }
-
-        private void ButtonMixLive2_Click(object sender, RoutedEventArgs e)
-        {
-            ManagerLiveMix(LiveCamStatus.video1);
-        }
-
-
-        private void ButtonMixLive3_Click(object sender, RoutedEventArgs e)
-        {
-            ManagerLiveMix(LiveCamStatus.video2);
-        }
-
-        //MANAGE LIVE CAM
-        private void StopIfWebCamLivePlay()
-        {
-            if (isWebCamLive)
-            {
-                StopCamera();
-                isWebCamLive = false;
-                if (isWebCamLocal1Play) StartCamera(LiveCamStatus.webCamLocal1);
-                else if (isWebCamLocal2Play) StartCamera(LiveCamStatus.webCamLocal2);
-                imageLive.Visibility = Visibility.Hidden;
-            }
-        }
-        private void StopIfCamLivePlay()
-        {
-            if (isCamLive)
-            {
-                liveME.LoadedBehavior = MediaState.Stop;
-                liveME.Visibility = Visibility.Hidden;
-                isCamLive = false;
-            }
-        }
-        private void StopIfWebCamLocal1Play()
-        {
-            if (isWebCamLocal1Play)
-            {
-                webCameraControl.StopCapture();
-                webCameraControl.Visibility = Visibility.Hidden;
-                isWebCamLocal1Play = false;
-            }
-        }
-
-        // MIX BUTTONS
-
-        private void ButtonLC1_Click(object sender, RoutedEventArgs e)
-        {
-            buttonLC1.Background = System.Windows.Media.Brushes.Green;
-            buttonLC2.Background = System.Windows.Media.Brushes.Red;
-            StopCamera();
-            StartCamera(LiveCamStatus.webCamLocal1);
-        }
-
-        private void ButtonLC2_Click(object sender, RoutedEventArgs e)
+        private void ColorLocalButtonsLC2()
         {
             buttonLC1.Background = System.Windows.Media.Brushes.Red;
             buttonLC2.Background = System.Windows.Media.Brushes.Green;
-            StopCamera();
-            StartCamera(LiveCamStatus.webCamLocal2);
         }
-
-        private void ButtonPL_Click(object sender, RoutedEventArgs e)
+        private void ColorLocalButtonsLC1()
         {
-            ManagerLiveMix(LiveCamStatus.playlist);
-           
+            buttonLC1.Background = System.Windows.Media.Brushes.Green;
+            buttonLC2.Background = System.Windows.Media.Brushes.Red;
         }
-
-        private void ButtonAddL1_Click(object sender, RoutedEventArgs e)
-        {
-            ManageVideoList(video1List, listBox1, video1ME);
-        }
-
-        private void ButtonAddL2_Click(object sender, RoutedEventArgs e)
-        {
-            ManageVideoList(video2List, listBox2, video2ME);
-        }
-
-        private void ButtonAddL3_Click(object sender, RoutedEventArgs e)
-        {
-            AddVideoToList(video3List, listBox3);
-        }
-
-
-        // MANAGE
-        private void AddVideoToList(Playlist videoList, ListBox box)
-        {
-            if (listBox.SelectedItem != null)
-            {
-                string choosedVideo = listBox.SelectedItem.ToString();
-                videoList.AddVideo(choosedVideo);
-                box.Items.Add(choosedVideo);
-            }
-        }
-        private void DelVideoFromList(Playlist videoList, ListBox boxChoosed)
-        {
-            if (boxChoosed.SelectedItem != null)
-            {
-                String choosedVideo = boxChoosed.SelectedItem.ToString();
-                videoList.DelVideo(choosedVideo);
-                boxChoosed.Items.RemoveAt(boxChoosed.SelectedIndex);
-            }
-        }
-        private void ManageVideoList(Playlist playlist, ListBox selectedBox, MediaElement mediaElement)
-        {
-            AddVideoToList(playlist, selectedBox);
-            if (playlist.Count() == 1)
-            {
-                PlayVideoList(playlist, mediaElement);
-            }
-        }
-
-        /*   private void StartWebCamera1Live()
-           {
-               webCameraControlLive.Visibility = Visibility.Visible;
-               webCameraControlLive.StartCapture(cameraId);
-               isWebCamLive = true;
-           }*/
-        private void StartLive()
-        {
-            liveME.Visibility = Visibility.Visible;
-            liveME.LoadedBehavior = MediaState.Play;
-            isCamLive = true;
-        }
-
-        //DELETE
-        private void ButtonDel1_Click(object sender, RoutedEventArgs e)
-        {
-            DelVideoFromList(video1List, listBox1);
-        }
-
-        private void ButtonDel2_Click(object sender, RoutedEventArgs e)
-        {
-            DelVideoFromList(video2List, listBox2);
-        }
-
-        private void ButtonDel3_Click(object sender, RoutedEventArgs e)
-        {
-            DelVideoFromList(video3List, listBox3);
-        }
-
-
-        //Loop for playlist
-        private void Video1ME_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            PlayVideoList(video1List, video1ME);
-        }
-
-        private void Video2ME_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            PlayVideoList(video2List, video2ME);
-        }
-
-        private void Video3ME_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            switch (liveME.Tag)
-            {
-                case 1:
-                    PlayVideoList(video1List, liveME, true);
-                    break;
-                case 2:
-                    PlayVideoList(video2List, liveME, true);
-                    break;
-                case 3:
-                    PlayVideoList(video3List, liveME, true);
-                    break;
-                default:
-                    break;
-            }
-
-        }
-
-        public ObservableCollection<FilterInfo> VideoDevices { get; set; }
-        private FilterInfo _currentDevice;
-
-
-        private bool _isIpCameraSource;
-        private bool _isWebcamSource;
-        private bool _isLiveCam = false;
-
-        private IVideoSource _videoSource;
-        private VideoFileWriter _writer;
-        private bool _recording;
-        private DateTime? _firstFrameTime;
-        private void GetVideoDevices()
-        {
-            VideoDevices = new ObservableCollection<FilterInfo>();
-            var devices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            foreach (FilterInfo device in devices)
-            {
-                VideoDevices.Add(device);
-            }
-            if (VideoDevices.Any())
-            {
-                CurrentDevice = VideoDevices[0];
-            }
-            else
-            {
-                MessageBox.Show("No webcam found");
-            }
-        }
-
-
-        private void StopCamera(bool localCam = true)
-        {
-            if (_videoSource != null && _videoSource.IsRunning)
-            {
-                _videoSource.SignalToStop();
-                _videoSource.NewFrame -= video_NewFrame;
-            }
-            if (localCam) image.Dispatcher.Invoke(() => image.Source = null);
-            else if (isWebCamLive) imageLive.Dispatcher.Invoke(() => imageLive.Source = null);
-        }
-
-        public void Dispose()
-        {
-            if (_videoSource != null && _videoSource.IsRunning)
-            {
-                _videoSource.SignalToStop();
-            }
-            _writer?.Dispose();
-        }
-
-
-        private void video_NewFrame(object sender, NewFrameEventArgs eventArgs)
-        {
-            try
-            {
-                using (var bitmap = (Bitmap)eventArgs.Frame.Clone())
-                {
-                    var bi = bitmap.ToBitmapImage();
-                    bi.Freeze();
-                    image.Dispatcher.Invoke(() => image.Source = bi);
-                    if (isWebCamLive) imageLive.Dispatcher.Invoke(() => imageLive.Source = bi);
-
-                }
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show("Error on _videoSource_NewFrame:\n" + exc.Message, "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                StopCamera();
-            }
-        }
-        public FilterInfo CurrentDevice
-        {
-            get { return _currentDevice; }
-            set { _currentDevice = value; }
-        }
-        private void StartCamera(LiveCamStatus cameraId)
-        {
-
-            switch (cameraId)
-            {
-                case LiveCamStatus.webCamLocal2:
-                    StopCamera();
-                    _videoSource = new MJPEGStream("http://192.168.1.192:8089/video");
-                    _videoSource.NewFrame += video_NewFrame;
-                    _videoSource.Start();
-                    isWebCamLocal1Play = false;
-                    isWebCamLocal2Play = true;
-                    break;
-                case LiveCamStatus.webCamLocal1:
-                    if (CurrentDevice != null)
-                    {
-                        StopCamera();
-                        _videoSource = new AForge.Video.DirectShow.VideoCaptureDevice(CurrentDevice.MonikerString);
-                        _videoSource.NewFrame += video_NewFrame;
-                        _videoSource.Start();
-                        isWebCamLocal1Play = true;
-                        isWebCamLocal2Play = false;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Current device can't be null");
-                    }
-                    break;
-
-
-                default:
-                    break;
-            }
-        }
-
-
     }
 }

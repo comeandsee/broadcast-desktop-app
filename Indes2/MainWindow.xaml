@@ -62,8 +62,8 @@
         <ListBox x:Name="listBox1" HorizontalAlignment="Left" Height="76" Margin="190,36.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="141"/>
         <ListBox x:Name="listBox2" HorizontalAlignment="Left" Height="71" Margin="190,149.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="142"/>
         <ListBox x:Name="listBox3" HorizontalAlignment="Left" Height="159" Margin="367,37.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150"/>
-        <Button x:Name="buttonAddL1" Content="Add L1" HorizontalAlignment="Left" Margin="19,208.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonAddL1_Click"/>
-        <Button x:Name="buttonAddL2" Content="Add L2" HorizontalAlignment="Left" Margin="69,209.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonAddL2_Click"/>
+        <Button x:Name="buttonAddL1" Content="ADD L1" HorizontalAlignment="Left" Margin="19,208.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonAddL1_Click"/>
+        <Button x:Name="buttonAddL2" Content="ADD L2" HorizontalAlignment="Left" Margin="69,209.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonAddL2_Click"/>
         <Button x:Name="buttonAddL3" Content="ADD L3" HorizontalAlignment="Left" Margin="117,209.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="47" Height="26" Click="ButtonAddL3_Click"/>
         <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" Margin="37,6.6,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="91" FontSize="15" FontWeight="Bold" Foreground="#FF022E65" Height="20" TextAlignment="Center">
             <TextBlock.Background>
@@ -177,9 +177,9 @@
                     </LinearGradientBrush>
                 </Run.Background>
             </Run></TextBlock>
-        <Button x:Name="buttonDel2" Content="Del L2" HorizontalAlignment="Left" Margin="286,121.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel2_Click" />
-        <Button x:Name="buttonDel1" Content="Del L1" HorizontalAlignment="Left" Margin="287,7.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel1_Click" />
-        <Button x:Name="buttonDel3" Content="Del PL" HorizontalAlignment="Left" Margin="468,6.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel3_Click" />
+        <Button x:Name="buttonDel2" Content="DEL L2" HorizontalAlignment="Left" Margin="286,121.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel2_Click" />
+        <Button x:Name="buttonDel1" Content="DEL L1" HorizontalAlignment="Left" Margin="287,7.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel1_Click" />
+        <Button x:Name="buttonDel3" Content="DEL PL" HorizontalAlignment="Left" Margin="468,6.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="45" Height="26" Click="ButtonDel3_Click" />
 
 
 
